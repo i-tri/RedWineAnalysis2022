@@ -1,0 +1,386 @@
+---
+title: "RedWine_202211"
+author: "Stephan"
+date: "2022-11-24"
+output: html_document
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+
+```
+
+Install all needed libraries and load them
+
+```{r load the ggplot graphics package and the others}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(tidyr)
+library(gridExtra)
+library(ggplot2)
+library(alr4)
+library(GGally)
+library(ggplot2)
+library(GGally)
+library(scales)
+library(memisc)
+```
+
+Import the data set
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+getwd()
+red_wine <- read.csv("wineQualityReds.csv")
+
+```
+
+# Uni-variate Plots Section
+
+Determine the class, structure of data set as well as a summary.
+
+Print a head of the data to see what it looks like.
+
+```{r echo=FALSE, Univariate_Plots}
+
+###Structure of Data from Red Wine Quality
+class(red_wine)
+str(red_wine)
+summary(red_wine)
+head(red_wine)
+
+```
+
+Draw different graphs to show the relationship of all the determining factors to the quality of the wine.
+
+```{r}
+ggplot(red_wine,aes(x = quality))+
+  geom_histogram()+
+  facet_wrap(~quality, scales = 'free_y')
+
+ggplot(red_wine, aes(x = pH))+
+  geom_histogram(binwidth = 0.07, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+
+ggplot(red_wine, aes(x = fixed.acidity))+
+  geom_histogram(binwidth = 0.05, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+
+ggplot(red_wine, aes(x = volatile.acidity))+
+  geom_histogram(binwidth = 0.01, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+
+ggplot(red_wine, aes(x = citric.acid))+
+  geom_histogram(binwidth = 0.01, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+
+ggplot(red_wine, aes(x = residual.sugar))+
+  geom_histogram(binwidth = 0.08, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+
+ ggplot(red_wine, aes(x = chlorides))+
+  geom_histogram(binwidth = 0.005, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ ggplot(red_wine, aes(x = free.sulfur.dioxide))+
+  geom_histogram(fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ ggplot(red_wine, aes(x = total.sulfur.dioxide))+
+  geom_histogram(fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ ggplot(red_wine, aes(x = density))+
+  geom_histogram(binwidth = 0.0005, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ ggplot(red_wine, aes(x = sulphates))+
+  geom_histogram(binwidth = 0.01, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ ggplot(red_wine, aes(x = alcohol))+
+  geom_histogram(binwidth = 0.1, fill = '#1234DC', color = 'red')+
+  facet_wrap(~quality, scales = 'free_y')
+ 
+ 
+
+summary(red_wine$quality)
+
+```
+
+Calculate the amount of wines above and below the mean and median
+
+```{r}
+
+###Sum above and below Mean and Medain Quality
+sum(red_wine$quality)
+
+sum(red_wine$quality> mean(red_wine$quality))
+sum(red_wine$quality< mean(red_wine$quality))
+
+sum(red_wine$quality> median(red_wine$quality))
+sum(red_wine$quality< median(red_wine$quality))
+```
+
+3 different graphs:
+
+1 - quality vs pH with geom point / scatter plot\
+2 - quality vs pH with geom jitter plot\
+3 - quality vs alcohol with jitter plot and line chart
+
+```{r}
+
+ggplot(aes(x = quality, y = pH),data = red_wine)+
+  geom_point(alpha = 1/10)
+
+ggplot(aes(x = quality, y = pH),data = red_wine)+
+  geom_jitter(alpha = 1/10)
+
+ggplot(aes(x = quality, y = alcohol),data = red_wine)+
+  geom_jitter(alpha = 1/5, color = "red")+
+  geom_line(stat = "summary", color = "blue")
+
+
+```
+
+4 x violin plots between quality and 4 influencing elements:
+
+-alcohol\
+-citric.acid\
+-sulphates\
+-pH
+
+```{r}
+
+library(gridExtra)
+library(grid)
+
+
+plot1 <- ggplot(aes(x = quality, y = alcohol, group = quality),data = red_wine)+
+            geom_line()+
+            geom_violin(alpha = 1/3, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+            
+  
+  
+
+plot2 <- ggplot(aes(x = quality, y = citric.acid, group = quality),data = red_wine)+  
+            geom_violin(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+
+plot3 <- ggplot(aes(x = quality, y = sulphates, group = quality),data = red_wine)+
+            geom_violin(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+plot4 <- ggplot(aes(x = quality, y = pH, group = quality),data = red_wine)+
+            geom_violin(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+
+grid.arrange(plot1, plot2 ,plot3, plot4, ncol = 4)
+```
+
+4 x box plots between quality and 4 influencing elements:
+
+-alcohol\
+-citric.acid\
+-sulphates\
+-pH
+
+```{r}
+library(gridExtra)
+library(grid)
+
+
+plot5 <- ggplot(aes(x = quality, y = alcohol, group = quality),data = red_wine)+
+            geom_boxplot(alpha = 1/3, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+plot6 <- ggplot(aes(x = quality, y = citric.acid, group = quality),data = red_wine)+  
+            geom_boxplot(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+plot7 <- ggplot(aes(x = quality, y = sulphates, group = quality),data = red_wine)+
+            geom_boxplot(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+plot8 <- ggplot(aes(x = quality, y = pH, group = quality),data = red_wine)+
+            geom_boxplot(alpha = 1/10, color = "blue", fill = '#1234DC' )+
+            geom_jitter(alpha = 1/5, color = "red")
+
+
+grid.arrange(plot5, plot6 ,plot7, plot8, ncol = 4)
+```
+
+Two graphs showing the relationship between:
+
+1- Quality vs Alcohol\
+2- Quality vs Volatile Acidity
+
+```{r}
+ggplot(aes(y = alcohol, x = quality), data = red_wine) +
+  geom_point(alpha = 1/20)+
+  geom_smooth(method = 'lm', color = 'green')
+
+ggplot(aes(y = volatile.acidity, x = quality), data = red_wine) +
+  geom_point(alpha = 1/20)+
+  geom_smooth(method = 'lm', color = 'red')
+
+```
+
+Correlation and correlation test between quality and determining factors:
+
+-pH\
+-Alcohol\
+-Sulphates\
+-Citric Acid\
+-Residual sugar\
+-Density\
+-Chlorides\
+-Volatile Acidity
+
+```{r}
+cor(red_wine$quality, red_wine$pH)
+cor.test(red_wine$quality, red_wine$pH)
+
+cor(red_wine$quality, red_wine$alcohol)
+cor.test(red_wine$quality, red_wine$alcohol)
+
+cor(red_wine$quality, red_wine$sulphates)
+cor.test (red_wine$quality, red_wine$sulphates)
+
+cor(red_wine$quality, red_wine$citric.acid)
+cor.test(red_wine$quality, red_wine$citric.acid)
+
+cor(red_wine$quality, red_wine$residual.sugar)
+cor.test(red_wine$quality, red_wine$residual.sugar)
+
+cor(red_wine$quality, red_wine$density)
+cor.test(red_wine$quality, red_wine$density)
+
+
+cor(red_wine$quality, red_wine$chlorides)
+cor.test(red_wine$quality, red_wine$chlorides)
+
+
+cor(red_wine$quality, red_wine$volatile.acidity)
+cor.test(red_wine$quality, red_wine$volatile.acidity)
+
+```
+
+ggpairs create a matrix of scatterplots with the data presented in column 10 - 13 of the data set
+
+```{r}
+ggpairs(red_wine,columns = 10:13)
+```
+
+ggpairs create a matrix of scatterplots with the data presented in the whole data set
+
+```{r}
+ggpairs(red_wine)
+```
+
+```{r}
+ggpairs(red_wine,
+        upper = list(continuous = "density", combo = "box_no_facet"),
+  lower = list(continuous = "points", combo = "dot_no_facet"))
+```
+
+Correlation Plot:
+
+\<0 indicate negative association\
+\>0 indicate positive association\
+0 indicate weak association
+
+```{r}
+ggcorr(red_wine)
+```
+
+Find the principal canonical correlation and corresponding row- and column-scores from a correspondence analysis of a two-way contingency table.
+
+```{r}
+corresp(red_wine)
+```
+
+```{r}
+
+library("corrgram")
+
+corrgram(red_wine,order=TRUE, lower.panel=panel.ellipse, upper.panel=panel.pts, text.panel=panel.txt, diag.panel=panel.minmax)
+```
+
+```{r}
+corrgram(red_wine,order=NULL, lower.panel=panel.shade, upper.panel=NULL, text.panel=panel.txt)
+```
+
+```{r}
+
+ggplot(aes(x = quality, y = alcohol, fill = alcohol), data = red_wine)+
+  geom_tile()+
+  scale_fill_gradientn(colours = colorRampPalette(c("blue", "red"))(500))+
+  geom_smooth(method = 'lm', color = 'green')
+```
+
+```{r}
+
+library(devtools)
+devtools::install_github("ropensci/visdat")
+library(visdat)
+
+
+vis_miss(red_wine)
+vis_dat(red_wine)
+```
+
+```{r}
+
+
+##install.packages("ggplot2")
+library(ggplot2)
+library(dplyr)
+
+#install.packages('reshape2')
+#library(reshape2)
+
+##install.packages("tidyr")
+library(tidyr)
+
+ggplot(red_wine, aes(x = alcohol, fill = pH))+
+  geom_histogram()+
+  scale_fill_brewer(type = 'qual')+
+  facet_wrap(~quality)
+```
+
+```{r}
+ggplot(aes(y = free.sulfur.dioxide, x = volatile.acidity), data = red_wine)+
+  geom_point(fill = I('#F79420'), color = I('black'), shape = 21)+
+  scale_y_continuous(lim = c(0,quantile(red_wine$free.sulfur.dioxide,0.99)))+
+  scale_x_continuous(lim = c(0,quantile(red_wine$volatile.acidity,0.99)))
+  
+```
+
+```{r}
+
+table(red_wine$alcohol)
+by(red_wine$residual.sugar,red_wine$quality,summary)
+
+
+```
+
+```{r}
+ggplot(aes(x = quality , y =(free.sulfur.dioxide)), data = red_wine) +
+  geom_boxplot()
+
+ggplot(aes(x = quality , y =(total.sulfur.dioxide)), data = red_wine) +
+  geom_boxplot()
+
+ggplot(aes(x = pH , y =quality), data = red_wine) +
+  geom_boxplot()
+
+```
