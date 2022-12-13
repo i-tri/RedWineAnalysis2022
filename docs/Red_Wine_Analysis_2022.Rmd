@@ -2,8 +2,9 @@
 title: "RedWine_202211"
 author: "Stephan"
 date: "2022-11-24"
-output: html_document
-  
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -234,153 +235,8 @@ ggplot(aes(y = volatile.acidity, x = quality), data = red_wine) +
 
 ```
 
-Correlation and correlation test between quality and determining factors:
-
--pH\
--Alcohol\
--Sulphates\
--Citric Acid\
--Residual sugar\
--Density\
--Chlorides\
--Volatile Acidity
-
-```{r}
-cor(red_wine$quality, red_wine$pH)
-cor.test(red_wine$quality, red_wine$pH)
-
-cor(red_wine$quality, red_wine$alcohol)
-cor.test(red_wine$quality, red_wine$alcohol)
-
-cor(red_wine$quality, red_wine$sulphates)
-cor.test (red_wine$quality, red_wine$sulphates)
-
-cor(red_wine$quality, red_wine$citric.acid)
-cor.test(red_wine$quality, red_wine$citric.acid)
-
-cor(red_wine$quality, red_wine$residual.sugar)
-cor.test(red_wine$quality, red_wine$residual.sugar)
-
-cor(red_wine$quality, red_wine$density)
-cor.test(red_wine$quality, red_wine$density)
 
 
-cor(red_wine$quality, red_wine$chlorides)
-cor.test(red_wine$quality, red_wine$chlorides)
 
 
-cor(red_wine$quality, red_wine$volatile.acidity)
-cor.test(red_wine$quality, red_wine$volatile.acidity)
 
-```
-
-ggpairs create a matrix of scatterplots with the data presented in column 10 - 13 of the data set
-
-```{r}
-ggpairs(red_wine,columns = 10:13)
-```
-
-ggpairs create a matrix of scatterplots with the data presented in the whole data set
-
-```{r}
-ggpairs(red_wine)
-```
-
-```{r}
-ggpairs(red_wine,
-        upper = list(continuous = "density", combo = "box_no_facet"),
-  lower = list(continuous = "points", combo = "dot_no_facet"))
-```
-
-Correlation Plot:
-
-\<0 indicate negative association\
-\>0 indicate positive association\
-0 indicate weak association
-
-```{r}
-ggcorr(red_wine)
-```
-
-Find the principal canonical correlation and corresponding row- and column-scores from a correspondence analysis of a two-way contingency table.
-
-```{r}
-corresp(red_wine)
-```
-
-```{r}
-
-library("corrgram")
-
-corrgram(red_wine,order=TRUE, lower.panel=panel.ellipse, upper.panel=panel.pts, text.panel=panel.txt, diag.panel=panel.minmax)
-```
-
-```{r}
-corrgram(red_wine,order=NULL, lower.panel=panel.shade, upper.panel=NULL, text.panel=panel.txt)
-```
-
-```{r}
-
-ggplot(aes(x = quality, y = alcohol, fill = alcohol), data = red_wine)+
-  geom_tile()+
-  scale_fill_gradientn(colours = colorRampPalette(c("blue", "red"))(500))+
-  geom_smooth(method = 'lm', color = 'green')
-```
-
-```{r}
-
-library(devtools)
-devtools::install_github("ropensci/visdat")
-library(visdat)
-
-
-vis_miss(red_wine)
-vis_dat(red_wine)
-```
-
-```{r}
-
-
-##install.packages("ggplot2")
-library(ggplot2)
-library(dplyr)
-
-#install.packages('reshape2')
-#library(reshape2)
-
-##install.packages("tidyr")
-library(tidyr)
-
-ggplot(red_wine, aes(x = alcohol, fill = pH))+
-  geom_histogram()+
-  scale_fill_brewer(type = 'qual')+
-  facet_wrap(~quality)
-```
-
-```{r}
-ggplot(aes(y = free.sulfur.dioxide, x = volatile.acidity), data = red_wine)+
-  geom_point(fill = I('#F79420'), color = I('black'), shape = 21)+
-  scale_y_continuous(lim = c(0,quantile(red_wine$free.sulfur.dioxide,0.99)))+
-  scale_x_continuous(lim = c(0,quantile(red_wine$volatile.acidity,0.99)))
-  
-```
-
-```{r}
-
-table(red_wine$alcohol)
-by(red_wine$residual.sugar,red_wine$quality,summary)
-
-
-```
-
-```{r}
-ggplot(aes(x = quality , y =(free.sulfur.dioxide)), data = red_wine) +
-  geom_boxplot()
-
-ggplot(aes(x = quality , y =(total.sulfur.dioxide)), data = red_wine) +
-  geom_boxplot()
-
-ggplot(aes(x = pH , y =quality), data = red_wine) +
-  geom_boxplot()
-
-```
